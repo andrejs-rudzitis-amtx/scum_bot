@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class LogFileController extends Controller
 {
-    public $path;
+    public $path,$parsedPath;
 
     public function __construct(){
         $this->path = storage_path('app/unProcessed');
+        $this->parsedPath = storage_path('app/Processed');
     }
     /**
      * Display a listing of the resource.
@@ -116,15 +117,27 @@ class LogFileController extends Controller
             }
             $fileList = ftp_nlist($con,env('FTP_ROOT'));
 
-            if($mask != null){
-                foreach($fileList as $key => $one) {
-                    if(strpos($one, 'login') === false)
-                        unset($fileList[$key]);
-                }
-            }
             if (!File::isDirectory($this->path));{
                 File::makeDirectory($this->path,0777,true,true);
             }
+            if(!File::isDirectory($this->parsedPath));{
+                File::makeDirectory($this->parsedPath,0777,true,true);
+            }
+            if($mask != null){
+                foreach($fileList as $key => $one) {
+//                    check for specific mask
+                    if(strpos($one, $mask) === false)
+                        unset($fileList[$key]);
+//                    check for already processed files TODO test this
+                    if(Storage::disk('local')->exists('/processed/'.$one)){
+                        unset($fileList[$key]);
+                    }
+                }
+            }
+
+
+
+
 
             foreach($fileList as $i => $path){
                 ftp_get($con, $this->path.'/'.$path,env('FTP_ROOT').$path,FTP_BINARY);
@@ -145,6 +158,8 @@ class LogFileController extends Controller
                         unset($fileList[$key]);
                 }
             }
+            $_k=0;
+            $_prevFile = '';
             foreach($fileList as $file){
                 $i=0;
                 $contents = File::get($file);
@@ -177,6 +192,12 @@ class LogFileController extends Controller
                         }
                         echo "\n Parsed " . $i . "  lines from file: " . $file;
                     }
+                //TODO Test this part as well
+                if($_k++ > 0){
+                    File::move($_prevFile,$this->parsedPath(basename($_prevFile)));
+                }
+                $_k++;
+                $_prevFile = $file;
             }
         }
         return($fileList);
