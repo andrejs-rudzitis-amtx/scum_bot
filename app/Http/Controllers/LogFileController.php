@@ -166,7 +166,7 @@ class LogFileController extends Controller
                 $contents = iconv('UTF-16LE','UTF-8',$contents);
                 $lines = preg_split('/[\n\r]/',$contents);
                     foreach($lines as $line) {
-                        dump($line);
+                        //dump($line);
                         if (strpos($line, 'logged in') || strpos($line, 'logged out')) {
                             $array = explode(' ', $line);
                             $scumIdHelper =explode ('(',$array[2]);
