@@ -166,15 +166,15 @@ class LogFileController extends Controller
                 $contents = iconv('UTF-16LE','UTF-8',$contents);
                 $lines = preg_split('/[\n\r]/',$contents);
                     foreach($lines as $line) {
+                        dump($line);
                         if (strpos($line, 'logged in') || strpos($line, 'logged out')) {
                             $array = explode(' ', $line);
                             $scumIdHelper =explode ('(',$array[2]);
-                            $scumId =substr($scumIdHelper[1],0,strpos($scumIdHelper[1],')'));
+                            $scumId = (is_array($scumIdHelper) && isset($scumIdHelper[1]))?substr($scumIdHelper[1],0,strpos($scumIdHelper[1],')')):null;
                             $ignHelper = explode(':',$array[2]);
                             $steamId64 = $ignHelper[0];
                             $ign = substr($ignHelper[1],0,strpos($ignHelper[1],'('));
-                            dump($ign);
-                            dump($array);
+
 
                             User::updateOrCreate(
                                 [
@@ -194,7 +194,7 @@ class LogFileController extends Controller
                     }
                 //TODO Test this part as well
                 if($_k++ > 0){
-                    File::move($_prevFile,$this->parsedPath(basename($_prevFile)));
+                    File::move($_prevFile,$this->parsedPath.'/'.basename($_prevFile));
                 }
                 $_k++;
                 $_prevFile = $file;
