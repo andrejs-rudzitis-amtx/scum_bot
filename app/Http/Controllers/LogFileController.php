@@ -129,7 +129,7 @@ class LogFileController extends Controller
                     if(strpos($one, $mask) === false)
                         unset($fileList[$key]);
 //                    check for already processed files TODO test this
-                    if(Storage::disk('local')->exists('/processed/'.$one)){
+                    if(Storage::disk('local')->exists('/Processed/'.$one)){
                         unset($fileList[$key]);
                     }
                 }
