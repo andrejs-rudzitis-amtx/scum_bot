@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/logFiles', 'LogFileController@index');
+Route::get('/restartAnnouncement/{minutes}','DiscordAnnouncementsController@restartAnnouncement');
