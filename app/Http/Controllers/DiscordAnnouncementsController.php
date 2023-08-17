@@ -13,7 +13,7 @@ class DiscordAnnouncementsController extends Controller
 
     public function restartAnnouncement($minutes)
     {
-        $content = $this->serverName . ' Server will restart in ' . $minutes . ' minutes, so read what ChatGpt thinks about it - ' . $this->quotes(rand(0, 49));
+        $content = $this->serverName . ' Server will restart in ' . $minutes . ' minutes! While server restarts here is a quote ChatGpt - ' . $this->quotes(rand(0, 49));
         DiscordAnnouncements::create([
             'content'=>$content
         ]);
