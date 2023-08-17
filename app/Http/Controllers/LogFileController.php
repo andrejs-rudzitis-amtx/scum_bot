@@ -162,6 +162,9 @@ class LogFileController extends Controller
             }
             $_k=0;
             $_prevFile = '';
+            if($this->serverRestarted==1){
+                User::where('presence', '=', 'online')->update(['presence' => 'offline']);
+            }
             foreach($fileList as $file){
                 $i=0;
                 $contents = File::get($file);
@@ -194,7 +197,7 @@ class LogFileController extends Controller
                         }
                         echo "\n Parsed " . $i . "  lines from file: " . $file;
                     }
-                //TODO Test this part as well
+
                 if($_k++ > 0){
                     File::move($_prevFile,$this->parsedPath.'/'.basename($_prevFile));
                 }
