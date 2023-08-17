@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class LogFileController extends Controller
 {
-    public $path,$parsedPath;
+    public $path,$parsedPath,$serverRestarted;
 
     public function __construct(){
         $this->path = storage_path('app/unProcessed');
         $this->parsedPath = storage_path('app/Processed');
+        $this->serverRestarted = false;
     }
     /**
      * Display a listing of the resource.
@@ -128,8 +129,9 @@ class LogFileController extends Controller
 //                    check for specific mask
                     if(strpos($one, $mask) === false)
                         unset($fileList[$key]);
-//                    check for already processed files TODO test this
+//                    check for already processed files
                     if(Storage::disk('local')->exists('/Processed/'.$one)){
+                        $this->serverRestarted = 1;
                         unset($fileList[$key]);
                     }
                 }
@@ -173,7 +175,7 @@ class LogFileController extends Controller
                             $scumId = (is_array($scumIdHelper) && isset($scumIdHelper[1]))?substr($scumIdHelper[1],0,strpos($scumIdHelper[1],')')):null;
                             $ignHelper = explode(':',$array[2]);
                             $steamId64 = $ignHelper[0];
-                            $ign = substr($ignHelper[1],0,strpos($ignHelper[1],'('));
+                            $ign = $this->stripallslashes(substr($ignHelper[1],0,strpos($ignHelper[1],'(')));
 
 
                             User::updateOrCreate(
@@ -201,5 +203,17 @@ class LogFileController extends Controller
             }
         }
         return($fileList);
+    }
+
+
+    function stripallslashes($string) {
+
+        while(strchr($string,'\\')) {
+
+            $string = stripslashes($string);
+
+        }
+        return($string);
+
     }
 }
