@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\ChatGptQuotes;
 use App\DiscordAnnouncements;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class DiscordAnnouncementsController extends Controller
@@ -32,29 +31,5 @@ class DiscordAnnouncementsController extends Controller
 
     }
 
-    public function getQuoteFromChatGpt($message = "Generate new funny quote about game server restart"){
-        $this->httpClient = new Client([
-            'base_uri' => 'https://api.openai.com/v1/',
-            'headers' => [
-                'Authorization' => 'Bearer ' . env('CHATGPT_API_KEY'),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
-
-        $response = $this->httpClient->post('chat/completions', [
-            'json' => [
-                'model' => 'gpt-3.5-turbo',
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are'],
-                    ['role' => 'user', 'content' => $message],
-                ],
-            ],
-        ]);
-
-        return json_decode($response->getBody(), true)['choices'][0]['message']['content'];
-
-
-    }
 
 }
