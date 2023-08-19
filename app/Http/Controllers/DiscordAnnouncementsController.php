@@ -14,7 +14,7 @@ class DiscordAnnouncementsController extends Controller
 
     public function restartAnnouncement($minutes)
     {
-        $content = $this->serverName . ' Server will restart in ' . $minutes . ' minutes! While server restarts here is a quote froom ChatGpt - ' . $this->quotes(rand(0, 49));
+        $content = $this->serverName . ' Server will restart in ' . $minutes . ' minutes! While server restarts here is a quote from ChatGpt - ' . $this->quotes(rand(0, 49));
         DiscordAnnouncements::create([
             'content'=>$content
         ]);
