@@ -162,7 +162,7 @@ class LogFileController extends Controller
                                 'scumId' => $scumId,
                                 'ign' => $ign,
                                 'steamId64' => $steamId64[1],
-                                'presence' => ($array[4] === 'in') ? 'online' : 'offline',
+                                'presence' => (strpos($line, 'logged in')) ? 'online' : 'offline',
                                 'updatedAt' => gmdate("Y-m-d H:i:s", time()),
                                 'presenceUpdatedAt' => gmdate("Y-m-d H:i:s", time()),
                             ]);
